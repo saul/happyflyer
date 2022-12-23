@@ -50,7 +50,7 @@ const GRAPH_BORDER_WIDTH = 2;
 const GRAPH_BORDER_STYLE = "#000";
 const GRIDLINE_LINE_STYLE = "#aaa";
 const GRIDLINE_LINE_WIDTH = 1;
-const MAX_HEIGHT_G = 4;
+const MAX_HEIGHT_G = 6;
 
 const MARGIN = 10;
 
@@ -88,13 +88,6 @@ function drawGridlines() {
   graphCtx.stroke();
 }
 
-function drawStrokeText(text: string, x: number, y: number) {
-  graphCtx.strokeStyle = "#fff";
-  graphCtx.lineWidth = 12;
-  graphCtx.strokeText(text, x, y);
-  graphCtx.fillText(text, x, y);
-}
-
 function onMotionData(g: Vector3) {
   const m = Math.sqrt(g.x * g.x + g.y * g.y + g.z * g.z) / GRAV;
   buffered.unshift(m);
@@ -103,13 +96,14 @@ function onMotionData(g: Vector3) {
   }
 
   graphCtx.clearRect(0, 0, width, height);
-  graphCtx.font = "20px sans-serif";
+
+  graphCtx.font = "sans-serif";
 
   drawGridlines();
 
   const start = magnitudeToHeight(m);
-  drawStrokeText("✈️", MARGIN, start);
-  drawStrokeText(`${Math.round(m * 100) / 100}`, MARGIN, start - 20);
+  graphCtx.fillText("✈️", MARGIN, start);
+  graphCtx.fillText(`${Math.round(m * 100) / 100}`, MARGIN, start - 10);
 
   graphCtx.beginPath();
   graphCtx.moveTo(MARGIN, start);
