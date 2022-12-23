@@ -1,8 +1,5 @@
 "use strict";
-var _a;
-const $x = document.querySelector("input[name=x]");
-const $y = document.querySelector("input[name=y]");
-const $z = document.querySelector("input[name=z]");
+const $startBtn = document.querySelector("#start");
 const $canvas = document.getElementById("graph");
 const graphCtx = $canvas.getContext("2d");
 const GRAV = 9.80665;
@@ -14,7 +11,7 @@ $canvas.style.width = width + "px";
 $canvas.style.height = height + "px";
 graphCtx === null || graphCtx === void 0 ? void 0 : graphCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
 let buffered = [];
-(_a = document.querySelector("#start")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", (e) => {
+$startBtn.addEventListener("click", (e) => {
     const dme = DeviceMotionEvent;
     if (typeof dme.requestPermission === "function") {
         dme
@@ -22,6 +19,7 @@ let buffered = [];
             .then((permissionState) => {
             if (permissionState === "granted") {
                 window.addEventListener("devicemotion", onMotion);
+                $startBtn.remove();
             }
             else {
                 console.error(`Unexpected device motion permission: ${permissionState}`);
@@ -83,14 +81,10 @@ function onMotionData(g) {
     graphCtx.moveTo(MARGIN, start);
     for (let i = 0; i < buffered.length; ++i) {
         graphCtx.lineTo(MARGIN + i, magnitudeToHeight(buffered[i]));
-        //graphCtx.fillRect(i, magnitudeToHeight(buffered[i]), 2, 2);
     }
     graphCtx.lineWidth = 3;
     graphCtx.strokeStyle = "#000";
     graphCtx.stroke();
-    $x.value = `${g.x}`;
-    $y.value = `${g.y}`;
-    $z.value = `${g.z}`;
 }
 function onMotion(event) {
     const g = event.accelerationIncludingGravity;
@@ -110,4 +104,5 @@ if (window.location.protocol === "http:") {
         window.requestAnimationFrame(onFrame);
     }
     window.requestAnimationFrame(onFrame);
+    $startBtn.remove();
 }
