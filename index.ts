@@ -137,3 +137,7 @@ if (window.location.protocol === "http:") {
   window.requestAnimationFrame(onFrame);
   $startBtn.remove();
 }
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js");
+}

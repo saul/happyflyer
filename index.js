@@ -9,7 +9,7 @@ $canvas.width = width * window.devicePixelRatio;
 $canvas.height = height * window.devicePixelRatio;
 $canvas.style.width = width + "px";
 $canvas.style.height = height + "px";
-graphCtx === null || graphCtx === void 0 ? void 0 : graphCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+graphCtx?.scale(window.devicePixelRatio, window.devicePixelRatio);
 let buffered = [];
 $startBtn.addEventListener("click", (e) => {
     const dme = DeviceMotionEvent;
@@ -105,4 +105,7 @@ if (window.location.protocol === "http:") {
     }
     window.requestAnimationFrame(onFrame);
     $startBtn.remove();
+}
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js");
 }
