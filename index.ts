@@ -52,7 +52,7 @@ const GRIDLINE_LINE_STYLE = "#aaa";
 const GRIDLINE_LINE_WIDTH = 1;
 const MAX_HEIGHT_G = 6;
 
-const MARGIN = 10;
+const MARGIN = 20;
 const TEXT_HEIGHT = 20;
 
 function magnitudeToHeight(m: number): number {
@@ -62,9 +62,16 @@ function magnitudeToHeight(m: number): number {
 }
 
 function drawGridlines() {
+  const size = 14;
+  graphCtx.font = `${size}px sans-serif`;
+  graphCtx.fillStyle = GRIDLINE_LINE_STYLE;
+
   // Horizontal axis gridlines
   for (let i = 0; i <= MAX_HEIGHT_G; ++i) {
     let y = magnitudeToHeight(i);
+
+    graphCtx.fillText(i.toString(), MARGIN - size, y + size * 1.2);
+
     graphCtx.beginPath();
     graphCtx.moveTo(0, y);
     graphCtx.lineTo(width, y);
@@ -112,6 +119,7 @@ function onMotionData(g: Vector3) {
   graphCtx.stroke();
 
   graphCtx.font = `${TEXT_HEIGHT}px sans-serif`;
+  graphCtx.fillStyle = "#000";
   graphCtx.fillText("✈️", MARGIN, start + TEXT_HEIGHT / 2);
   graphCtx.fillText(`${m.toFixed(2)}`, MARGIN, start - TEXT_HEIGHT / 2);
 }
