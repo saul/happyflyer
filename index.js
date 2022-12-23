@@ -5,6 +5,7 @@ const $y = document.querySelector("input[name=y]");
 const $z = document.querySelector("input[name=z]");
 const $canvas = document.getElementById("graph");
 const graphCtx = $canvas.getContext("2d");
+const GRAV = 9.80665;
 const width = 512;
 const height = 512;
 $canvas.width = width * window.devicePixelRatio;
@@ -36,7 +37,7 @@ function magnitudeToHeight(m) {
     return (m / 5) * height;
 }
 function onMotionData(g) {
-    const m = Math.sqrt(g.x * g.x + g.y * g.y + g.z * g.z);
+    const m = Math.sqrt(g.x * g.x + g.y * g.y + g.z * g.z) / GRAV;
     buffered.unshift(m);
     if (buffered.length == width) {
         delete buffered[width];

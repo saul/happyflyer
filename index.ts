@@ -4,6 +4,7 @@ const $z = document.querySelector("input[name=z]")! as HTMLInputElement;
 const $canvas = document.getElementById("graph")! as HTMLCanvasElement;
 const graphCtx = $canvas.getContext("2d")!;
 
+const GRAV = 9.80665;
 const width = 512;
 const height = 512;
 $canvas.width = width * window.devicePixelRatio;
@@ -51,7 +52,7 @@ function magnitudeToHeight(m: number): number {
 }
 
 function onMotionData(g: Vector3) {
-  const m = Math.sqrt(g.x * g.x + g.y * g.y + g.z * g.z);
+  const m = Math.sqrt(g.x * g.x + g.y * g.y + g.z * g.z) / GRAV;
   buffered.unshift(m);
   if (buffered.length == width) {
     delete buffered[width];
