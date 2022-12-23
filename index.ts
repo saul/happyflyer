@@ -47,8 +47,46 @@ document.querySelector("#start")?.addEventListener("click", (e) => {
   }
 });
 
+const GRAPH_BORDER_WIDTH = 2;
+const GRAPH_BORDER_STYLE = "#000";
+const GRIDLINE_LINE_STYLE = "#aaa";
+const GRIDLINE_LINE_WIDTH = 1;
+const MAX_HEIGHT_G = 6;
+
+const MARGIN = 10;
+
 function magnitudeToHeight(m: number): number {
-  return (m / 5) * height;
+  return (
+    MARGIN + (height - 2 * MARGIN) - (m / MAX_HEIGHT_G) * (height - 2 * MARGIN)
+  );
+}
+
+function drawGridlines() {
+  // Horizontal axis gridlines
+  for (let i = 0; i <= MAX_HEIGHT_G; ++i) {
+    let y = magnitudeToHeight(i);
+    graphCtx.beginPath();
+    graphCtx.moveTo(0, y);
+    graphCtx.lineTo(width, y);
+
+    if (i == 0) {
+      graphCtx.lineWidth = GRAPH_BORDER_WIDTH;
+      graphCtx.strokeStyle = GRAPH_BORDER_STYLE;
+    } else {
+      graphCtx.lineWidth = GRIDLINE_LINE_WIDTH;
+      graphCtx.strokeStyle = GRIDLINE_LINE_STYLE;
+    }
+
+    graphCtx.stroke();
+  }
+
+  // Vertical axis
+  graphCtx.beginPath();
+  graphCtx.moveTo(MARGIN, 0);
+  graphCtx.lineTo(MARGIN, height);
+  graphCtx.lineWidth = GRAPH_BORDER_WIDTH;
+  graphCtx.strokeStyle = GRAPH_BORDER_STYLE;
+  graphCtx.stroke();
 }
 
 function onMotionData(g: Vector3) {
@@ -59,20 +97,25 @@ function onMotionData(g: Vector3) {
   }
 
   graphCtx.clearRect(0, 0, width, height);
-  graphCtx.moveTo(0, 0);
-  graphCtx.lineWidth = 2;
+
   graphCtx.font = "sans-serif";
 
+  drawGridlines();
+
   const start = magnitudeToHeight(m);
-  graphCtx.fillText("✈️", 10, start);
+  graphCtx.fillText("✈️", MARGIN, start);
+  graphCtx.fillText(`${Math.round(m * 100) / 100}`, MARGIN, start - 10);
 
   graphCtx.beginPath();
-  graphCtx.moveTo(10, start);
+  graphCtx.moveTo(MARGIN, start);
   for (let i = 0; i < buffered.length; ++i) {
-    graphCtx.lineTo(10 + i, magnitudeToHeight(buffered[i]));
+    graphCtx.lineTo(MARGIN + i, magnitudeToHeight(buffered[i]));
 
     //graphCtx.fillRect(i, magnitudeToHeight(buffered[i]), 2, 2);
   }
+
+  graphCtx.lineWidth = 3;
+  graphCtx.strokeStyle = "#000";
   graphCtx.stroke();
 
   $x.value = `${g.x}`;
