@@ -1,0 +1,24 @@
+{
+  "name": "happyflyer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saul/happyflyer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/saul/happyflyer/issues"
+  },
+  "homepage": "https://github.com/saul/happyflyer#readme",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}
