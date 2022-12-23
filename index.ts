@@ -53,6 +53,7 @@ const GRIDLINE_LINE_WIDTH = 1;
 const MAX_HEIGHT_G = 6;
 
 const MARGIN = 10;
+const TEXT_HEIGHT = 20;
 
 function magnitudeToHeight(m: number): number {
   return (
@@ -97,14 +98,9 @@ function onMotionData(g: Vector3) {
 
   graphCtx.clearRect(0, 0, width, height);
 
-  graphCtx.font = "sans-serif";
-
   drawGridlines();
 
   const start = magnitudeToHeight(m);
-  graphCtx.fillText("✈️", MARGIN, start);
-  graphCtx.fillText(`${Math.round(m * 100) / 100}`, MARGIN, start - 10);
-
   graphCtx.beginPath();
   graphCtx.moveTo(MARGIN, start);
   for (let i = 0; i < buffered.length; ++i) {
@@ -114,6 +110,10 @@ function onMotionData(g: Vector3) {
   graphCtx.lineWidth = 3;
   graphCtx.strokeStyle = "#000";
   graphCtx.stroke();
+
+  graphCtx.font = `${TEXT_HEIGHT}px sans-serif`;
+  graphCtx.fillText("✈️", MARGIN, start + TEXT_HEIGHT / 2);
+  graphCtx.fillText(`${m.toFixed(2)}`, MARGIN, start - TEXT_HEIGHT / 2);
 }
 
 function onMotion(event: DeviceMotionEvent) {
