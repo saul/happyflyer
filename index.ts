@@ -20,6 +20,32 @@ interface Vector3 {
 
 let buffered: number[] = [];
 
+interface IOSDeviceMotionEvent {
+  requestPermission?: () => Promise<string>;
+}
+
+document.querySelector("#start")?.addEventListener("click", (e) => {
+  const dme: IOSDeviceMotionEvent =
+    DeviceMotionEvent as unknown as IOSDeviceMotionEvent;
+
+  if (typeof dme.requestPermission === "function") {
+    dme
+      .requestPermission()
+      .then((permissionState) => {
+        if (permissionState === "granted") {
+          window.addEventListener("devicemotion", onMotion);
+        } else {
+          console.error(
+            `Unexpected device motion permission: ${permissionState}`
+          );
+        }
+      })
+      .catch(console.error);
+  } else {
+    window.addEventListener("devicemotion", onMotion);
+  }
+});
+
 function magnitudeToHeight(m: number): number {
   return (m / 5) * height;
 }
@@ -53,6 +79,12 @@ function onMotionData(g: Vector3) {
   $z.value = `${g.z}`;
 }
 
+function onMotion(event: DeviceMotionEvent) {
+  const g = event.accelerationIncludingGravity;
+  if (!g) return;
+  onMotionData(g as Vector3);
+}
+
 // In non-secure contexts we can't get motion data
 if (window.location.protocol === "http:") {
   function onFrame() {
@@ -66,10 +98,4 @@ if (window.location.protocol === "http:") {
   }
 
   window.requestAnimationFrame(onFrame);
-} else {
-  window.addEventListener("devicemotion", (event) => {
-    const g = event.accelerationIncludingGravity;
-    if (!g) return;
-    onMotionData(g as Vector3);
-  });
 }

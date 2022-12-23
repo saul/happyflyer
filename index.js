@@ -1,4 +1,5 @@
 "use strict";
+var _a;
 const $x = document.querySelector("input[name=x]");
 const $y = document.querySelector("input[name=y]");
 const $z = document.querySelector("input[name=z]");
@@ -12,6 +13,25 @@ $canvas.style.width = width + "px";
 $canvas.style.height = height + "px";
 graphCtx === null || graphCtx === void 0 ? void 0 : graphCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
 let buffered = [];
+(_a = document.querySelector("#start")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", (e) => {
+    const dme = DeviceMotionEvent;
+    if (typeof dme.requestPermission === "function") {
+        dme
+            .requestPermission()
+            .then((permissionState) => {
+            if (permissionState === "granted") {
+                window.addEventListener("devicemotion", onMotion);
+            }
+            else {
+                console.error(`Unexpected device motion permission: ${permissionState}`);
+            }
+        })
+            .catch(console.error);
+    }
+    else {
+        window.addEventListener("devicemotion", onMotion);
+    }
+});
 function magnitudeToHeight(m) {
     return (m / 5) * height;
 }
@@ -38,6 +58,12 @@ function onMotionData(g) {
     $y.value = `${g.y}`;
     $z.value = `${g.z}`;
 }
+function onMotion(event) {
+    const g = event.accelerationIncludingGravity;
+    if (!g)
+        return;
+    onMotionData(g);
+}
 // In non-secure contexts we can't get motion data
 if (window.location.protocol === "http:") {
     function onFrame() {
@@ -50,12 +76,4 @@ if (window.location.protocol === "http:") {
         window.requestAnimationFrame(onFrame);
     }
     window.requestAnimationFrame(onFrame);
-}
-else {
-    window.addEventListener("devicemotion", (event) => {
-        const g = event.accelerationIncludingGravity;
-        if (!g)
-            return;
-        onMotionData(g);
-    });
 }
