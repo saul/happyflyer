@@ -6,6 +6,9 @@ const $imageTop = document.querySelector("#img-top")! as HTMLImageElement;
 const $imageSide = document.querySelector("#img-side")! as HTMLImageElement;
 const $imageFront = document.querySelector("#img-front")! as HTMLImageElement;
 
+const $planePitch = document.querySelector("#plane-pitch")! as HTMLImageElement;
+const $planeRoll = document.querySelector("#plane-roll")! as HTMLImageElement;
+
 const GRAV = 9.80665;
 const width = 512;
 const height = 512;
@@ -43,6 +46,7 @@ $startBtn.addEventListener("click", (e) => {
         console.log(`DeviceMotionEvent: ${permissionState}`);
         if (permissionState === "granted") {
           window.addEventListener("devicemotion", onMotion);
+          window.addEventListener("deviceorientation", onOrientation);
           $startBtn.remove();
         } else {
           console.error(
@@ -154,6 +158,14 @@ function onMotion(event: DeviceMotionEvent) {
   onMotionData(g as Vector3);
 }
 
+function onOrientation(event: DeviceOrientationEvent) {
+  const roll = event.gamma!; // -90 to 90
+  const pitch = event.beta!; // -180 to 180
+
+  $planeRoll.style.transform = `rotate(${-roll}deg)`;
+  $planePitch.style.transform = `rotate(${pitch}deg)`;
+}
+
 // In non-secure contexts we can't get motion data
 if (window.location.protocol === "http:") {
   function onFrame() {
@@ -167,6 +179,7 @@ if (window.location.protocol === "http:") {
   }
 
   window.requestAnimationFrame(onFrame);
+  window.addEventListener("deviceorientation", onOrientation);
   $startBtn.remove();
 }
 
