@@ -23,18 +23,24 @@ interface Vector3 {
 
 let buffered: number[] = [];
 
-interface IOSDeviceMotionEvent {
+interface IOSPermissionRequestEvent {
   requestPermission?: () => Promise<string>;
 }
 
 $startBtn.addEventListener("click", (e) => {
-  const dme: IOSDeviceMotionEvent =
-    DeviceMotionEvent as unknown as IOSDeviceMotionEvent;
+  const dme: IOSPermissionRequestEvent =
+    DeviceMotionEvent as unknown as IOSPermissionRequestEvent;
+  const doe: IOSPermissionRequestEvent =
+    DeviceOrientationEvent as unknown as IOSPermissionRequestEvent;
 
-  if (typeof dme.requestPermission === "function") {
+  if (
+    typeof dme.requestPermission === "function" &&
+    typeof doe.requestPermission === "function"
+  ) {
     dme
       .requestPermission()
       .then((permissionState) => {
+        console.log(`DeviceMotionEvent: ${permissionState}`);
         if (permissionState === "granted") {
           window.addEventListener("devicemotion", onMotion);
           $startBtn.remove();
@@ -43,6 +49,13 @@ $startBtn.addEventListener("click", (e) => {
             `Unexpected device motion permission: ${permissionState}`
           );
         }
+      })
+      .catch(console.error);
+
+    doe
+      .requestPermission()
+      .then((permissionState) => {
+        console.log(`DeviceOrientationEvent: ${permissionState}`);
       })
       .catch(console.error);
   } else {

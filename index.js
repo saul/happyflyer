@@ -16,10 +16,13 @@ graphCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
 let buffered = [];
 $startBtn.addEventListener("click", (e) => {
     const dme = DeviceMotionEvent;
-    if (typeof dme.requestPermission === "function") {
+    const doe = DeviceOrientationEvent;
+    if (typeof dme.requestPermission === "function" &&
+        typeof doe.requestPermission === "function") {
         dme
             .requestPermission()
             .then((permissionState) => {
+            console.log(`DeviceMotionEvent: ${permissionState}`);
             if (permissionState === "granted") {
                 window.addEventListener("devicemotion", onMotion);
                 $startBtn.remove();
@@ -27,6 +30,12 @@ $startBtn.addEventListener("click", (e) => {
             else {
                 console.error(`Unexpected device motion permission: ${permissionState}`);
             }
+        })
+            .catch(console.error);
+        doe
+            .requestPermission()
+            .then((permissionState) => {
+            console.log(`DeviceOrientationEvent: ${permissionState}`);
         })
             .catch(console.error);
     }
