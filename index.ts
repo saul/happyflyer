@@ -7,7 +7,13 @@ const $imageSide = document.querySelector("#img-side")! as HTMLImageElement;
 const $imageFront = document.querySelector("#img-front")! as HTMLImageElement;
 
 const $planePitch = document.querySelector("#plane-pitch")! as HTMLImageElement;
+const $planePitchText = document.querySelector(
+  "#plane-pitch-text"
+)! as HTMLDivElement;
 const $planeRoll = document.querySelector("#plane-roll")! as HTMLImageElement;
+const $planeRollText = document.querySelector(
+  "#plane-roll-text"
+)! as HTMLDivElement;
 
 const GRAV = 9.80665;
 const width = 512;
@@ -139,9 +145,6 @@ function onMotionData(g: Vector3) {
   graphCtx.strokeStyle = "#27ae60";
   graphCtx.stroke();
 
-  graphCtx.font = `${TEXT_HEIGHT}px sans-serif`;
-  graphCtx.fillStyle = "#27ae60";
-  //graphCtx.fillText("✈️", MARGIN, start + TEXT_HEIGHT / 2);
   graphCtx.drawImage(
     $imageSide,
     MARGIN,
@@ -149,6 +152,9 @@ function onMotionData(g: Vector3) {
     60,
     60 * ($imageSide.height / $imageSide.width)
   );
+
+  graphCtx.font = `${TEXT_HEIGHT}px sans-serif`;
+  graphCtx.fillStyle = "#27ae60";
   graphCtx.fillText(`${m.toFixed(2)}`, MARGIN + 5, start - TEXT_HEIGHT / 2);
 }
 
@@ -163,7 +169,10 @@ function onOrientation(event: DeviceOrientationEvent) {
   const pitch = event.beta!; // -180 to 180
 
   $planeRoll.style.transform = `rotate(${-roll}deg)`;
+  $planeRollText.textContent = `${roll | 0}º`;
+
   $planePitch.style.transform = `rotate(${pitch}deg)`;
+  $planePitchText.textContent = `${pitch | 0}º`;
 }
 
 // In non-secure contexts we can't get motion data

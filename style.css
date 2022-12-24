@@ -57,3 +57,11 @@ body {
   padding: 10px;
   overflow: hidden;
 }
+
+.plane-deg-text {
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
