@@ -8,8 +8,28 @@
   </head>
 
   <body>
-    <button id="start">▶️ Start</button>
-    <canvas id="graph" />
+    <div class="container">
+      <button id="start">▶️ Start</button>
+
+      <div class="instrument-panel">
+        <div class="plane-container">
+          <img id="plane-pitch" class="plane plane-side" src="side.png" />
+        </div>
+
+        <div class="plane-container">
+          <img id="plane-roll" class="plane plane-front" src="front.png" />
+        </div>
+      </div>
+
+      <canvas id="graph" />
+
+      <div style="display: none">
+        <img id="img-top" src="top.png" />
+        <img id="img-side" src="side.png" />
+        <img id="img-front" src="front.png" />
+      </div>
+    </div>
+
     <script type="text/javascript" src="index.js"></script>
   </body>
 </html>

@@ -1,7 +1,15 @@
 "use strict";
 const sw = self;
 const cacheName = "happyflyer-v1";
-const contentToCache = ["/", "/index.html", "/index.js", "/style.css"];
+const contentToCache = [
+    "/",
+    "/index.html",
+    "/index.js",
+    "/style.css",
+    "/top.png",
+    "/side.png",
+    "/front.png",
+];
 sw.addEventListener("install", (e) => {
     console.log("[Service Worker] Install");
     e.waitUntil((async () => {

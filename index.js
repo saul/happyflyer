@@ -2,6 +2,9 @@
 const $startBtn = document.querySelector("#start");
 const $canvas = document.getElementById("graph");
 const graphCtx = $canvas.getContext("2d");
+const $imageTop = document.querySelector("#img-top");
+const $imageSide = document.querySelector("#img-side");
+const $imageFront = document.querySelector("#img-front");
 const GRAV = 9.80665;
 const width = 512;
 const height = 512;
@@ -9,7 +12,7 @@ $canvas.width = width * window.devicePixelRatio;
 $canvas.height = height * window.devicePixelRatio;
 $canvas.style.width = width + "px";
 $canvas.style.height = height + "px";
-graphCtx?.scale(window.devicePixelRatio, window.devicePixelRatio);
+graphCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
 let buffered = [];
 $startBtn.addEventListener("click", (e) => {
     const dme = DeviceMotionEvent;
@@ -85,12 +88,13 @@ function onMotionData(g) {
         graphCtx.lineTo(MARGIN + i, magnitudeToHeight(buffered[i]));
     }
     graphCtx.lineWidth = 3;
-    graphCtx.strokeStyle = "#000";
+    graphCtx.strokeStyle = "#27ae60";
     graphCtx.stroke();
     graphCtx.font = `${TEXT_HEIGHT}px sans-serif`;
-    graphCtx.fillStyle = "#000";
-    graphCtx.fillText("✈️", MARGIN, start + TEXT_HEIGHT / 2);
-    graphCtx.fillText(`${m.toFixed(2)}`, MARGIN, start - TEXT_HEIGHT / 2);
+    graphCtx.fillStyle = "#27ae60";
+    //graphCtx.fillText("✈️", MARGIN, start + TEXT_HEIGHT / 2);
+    graphCtx.drawImage($imageSide, MARGIN, start - 15, 60, 60 * ($imageSide.height / $imageSide.width));
+    graphCtx.fillText(`${m.toFixed(2)}`, MARGIN + 5, start - TEXT_HEIGHT / 2);
 }
 function onMotion(event) {
     const g = event.accelerationIncludingGravity;
@@ -104,8 +108,8 @@ if (window.location.protocol === "http:") {
         const time = performance.now() / 1000;
         onMotionData({
             x: Math.sin(time) * 1 + 1 + Math.random() / 50,
-            y: Math.cos(time) * 1 + 1 + Math.random() / 50,
-            z: Math.sin(time) * 3 + 1 + Math.random() / 50,
+            y: Math.cos(time) * 1 + 5 + Math.random() / 50,
+            z: Math.sin(time) * 2 + GRAV + Math.random() / 50,
         });
         window.requestAnimationFrame(onFrame);
     }

@@ -9,3 +9,51 @@
   padding: 0.5em 1em;
   margin: 0 auto;
 }
+
+.plane-container {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: solid 2px;
+  position: relative;
+}
+
+.plane {
+  width: 75%;
+  display: block;
+  position: absolute;
+}
+
+.plane-side {
+  left: calc(100% * (30 / 200));
+  top: calc(100% * (65 / 200));
+  transform-origin: calc(100% * (163 / 345)) calc(100% * (81 / 115));
+}
+
+.plane-front {
+  left: calc(100% * (26 / 200));
+  top: calc(100% * (61 / 200));
+  transform-origin: 50% calc(100% * (95 / 126));
+}
+
+.instrument-panel {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  max-width: 100vw;
+  width: 512px;
+  margin: 0 auto;
+  padding: 10px;
+  overflow: hidden;
+}
