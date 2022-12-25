@@ -52,7 +52,7 @@ const GRAPH_BORDER_WIDTH = 2;
 const GRAPH_BORDER_STYLE = "#000";
 const GRIDLINE_LINE_STYLE = "#aaa";
 const GRIDLINE_LINE_WIDTH = 1;
-const MAX_HEIGHT_G = 6;
+const MAX_HEIGHT_G = 4;
 const MARGIN = 20;
 const TEXT_HEIGHT = 20;
 function magnitudeToHeight(m) {
@@ -117,9 +117,19 @@ function onMotion(event) {
         return;
     onMotionData(g);
 }
-function onOrientation(event) {
-    const roll = event.gamma; // -90 to 90
-    const pitch = event.beta; // -180 to 180
+let lastRawRoll = 0;
+let lastRawPitch = 0;
+let pitchBias = 0;
+let displayCalibratedPitch = true;
+function updateOrientation(pitch, roll) {
+    // Remove pitch bias if we want to show calibrated
+    if (displayCalibratedPitch) {
+        pitch -= pitchBias;
+        $planePitchText.classList.add("calibrated");
+    }
+    else {
+        $planePitchText.classList.remove("calibrated");
+    }
     if (Math.abs(pitch) > 30 || Math.abs(roll) > 30) {
         $planeRoll.style.transform = "";
         $planeRollText.textContent = `Place flat`;
@@ -130,9 +140,26 @@ function onOrientation(event) {
         $planeRoll.style.transform = `rotate(${-roll}deg)`;
         $planeRollText.textContent = `${roll | 0}º`;
         $planePitch.style.transform = `rotate(${pitch}deg)`;
-        $planePitchText.textContent = `${pitch | 0}º`;
+        $planePitchText.textContent =
+            (displayCalibratedPitch ? "" : "(raw)\n") + `${pitch | 0}º`;
     }
 }
+function onOrientation(event) {
+    const roll = event.gamma; // -90 to 90
+    const pitch = event.beta; // -180 to 180
+    lastRawRoll = roll;
+    lastRawPitch = pitch;
+    updateOrientation(pitch, roll);
+}
+$planePitch.addEventListener("click", () => {
+    pitchBias = lastRawPitch;
+    displayCalibratedPitch = true;
+    updateOrientation(lastRawPitch, lastRawRoll);
+});
+$planePitchText.addEventListener("click", () => {
+    displayCalibratedPitch = !displayCalibratedPitch;
+    updateOrientation(lastRawPitch, lastRawRoll);
+});
 // In non-secure contexts we can't get motion data
 if (window.location.protocol === "http:") {
     function onFrame() {
