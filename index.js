@@ -49,20 +49,25 @@ $startBtn.addEventListener("click", (e) => {
     }
 });
 const GRAPH_BORDER_WIDTH = 2;
-const GRAPH_BORDER_STYLE = "#000";
-const GRIDLINE_LINE_STYLE = "#aaa";
+const GRAPH_BORDER_STYLE = "rgba(0, 0, 0, 1.0)";
+const GRIDLINE_LINE_STYLE = "rgba(0, 0, 0, 0.3)";
 const GRIDLINE_LINE_WIDTH = 1;
-const MAX_HEIGHT_G = 4;
+const MAX_HEIGHT_G = 5;
 const MARGIN = 20;
 const TEXT_HEIGHT = 20;
 function magnitudeToHeight(m) {
     return (MARGIN + (height - 2 * MARGIN) - (m / MAX_HEIGHT_G) * (height - 2 * MARGIN));
 }
 function drawGridlines() {
+    // Graph colour fill
+    graphCtx.fillStyle = "rgba(46, 204, 113, 0.2)";
+    graphCtx.fillRect(MARGIN, magnitudeToHeight(2.5), width, magnitudeToHeight(0) - magnitudeToHeight(2.5));
+    graphCtx.fillStyle = "rgba(230, 126, 34, 0.2)";
+    graphCtx.fillRect(MARGIN, magnitudeToHeight(MAX_HEIGHT_G), width, magnitudeToHeight(2.5) - magnitudeToHeight(MAX_HEIGHT_G));
+    // Horizontal axis gridlines
     const size = 14;
     graphCtx.font = `${size}px sans-serif`;
     graphCtx.fillStyle = GRIDLINE_LINE_STYLE;
-    // Horizontal axis gridlines
     for (let i = 0; i <= MAX_HEIGHT_G; ++i) {
         let y = magnitudeToHeight(i);
         graphCtx.fillText(i.toString(), MARGIN - size, y + size * 1.2);
