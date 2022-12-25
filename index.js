@@ -66,6 +66,7 @@ function drawGridlines() {
     for (let i = 0; i <= MAX_HEIGHT_G; ++i) {
         let y = magnitudeToHeight(i);
         graphCtx.fillText(i.toString(), MARGIN - size, y + size * 1.2);
+        graphCtx.beginPath();
         if (i == 0) {
             graphCtx.lineWidth = GRAPH_BORDER_WIDTH;
             graphCtx.strokeStyle = GRAPH_BORDER_STYLE;
@@ -74,17 +75,18 @@ function drawGridlines() {
             graphCtx.lineWidth = GRIDLINE_LINE_WIDTH;
             graphCtx.strokeStyle = GRIDLINE_LINE_STYLE;
         }
-        graphCtx.beginPath();
         graphCtx.moveTo(0, y);
         graphCtx.lineTo(width, y);
+        graphCtx.closePath();
         graphCtx.stroke();
     }
     // Vertical axis
+    graphCtx.beginPath();
     graphCtx.lineWidth = GRAPH_BORDER_WIDTH;
     graphCtx.strokeStyle = GRAPH_BORDER_STYLE;
-    graphCtx.beginPath();
     graphCtx.moveTo(MARGIN, 0);
     graphCtx.lineTo(MARGIN, height);
+    graphCtx.closePath();
     graphCtx.stroke();
 }
 function onMotionData(g) {
@@ -97,12 +99,13 @@ function onMotionData(g) {
     drawGridlines();
     const start = magnitudeToHeight(m);
     graphCtx.beginPath();
+    graphCtx.lineWidth = 3;
+    graphCtx.strokeStyle = "#27ae60";
     graphCtx.moveTo(MARGIN, start);
     for (let i = 0; i < buffered.length; ++i) {
         graphCtx.lineTo(MARGIN + i, magnitudeToHeight(buffered[i]));
     }
-    graphCtx.lineWidth = 3;
-    graphCtx.strokeStyle = "#27ae60";
+    graphCtx.closePath();
     graphCtx.stroke();
     graphCtx.drawImage($imageSide, MARGIN, start - 15, 60, 60 * ($imageSide.height / $imageSide.width));
     graphCtx.font = `${TEXT_HEIGHT}px sans-serif`;
