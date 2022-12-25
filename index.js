@@ -66,9 +66,6 @@ function drawGridlines() {
     for (let i = 0; i <= MAX_HEIGHT_G; ++i) {
         let y = magnitudeToHeight(i);
         graphCtx.fillText(i.toString(), MARGIN - size, y + size * 1.2);
-        graphCtx.beginPath();
-        graphCtx.moveTo(0, y);
-        graphCtx.lineTo(width, y);
         if (i == 0) {
             graphCtx.lineWidth = GRAPH_BORDER_WIDTH;
             graphCtx.strokeStyle = GRAPH_BORDER_STYLE;
@@ -77,14 +74,17 @@ function drawGridlines() {
             graphCtx.lineWidth = GRIDLINE_LINE_WIDTH;
             graphCtx.strokeStyle = GRIDLINE_LINE_STYLE;
         }
+        graphCtx.beginPath();
+        graphCtx.moveTo(0, y);
+        graphCtx.lineTo(width, y);
         graphCtx.stroke();
     }
     // Vertical axis
+    graphCtx.lineWidth = GRAPH_BORDER_WIDTH;
+    graphCtx.strokeStyle = GRAPH_BORDER_STYLE;
     graphCtx.beginPath();
     graphCtx.moveTo(MARGIN, 0);
     graphCtx.lineTo(MARGIN, height);
-    graphCtx.lineWidth = GRAPH_BORDER_WIDTH;
-    graphCtx.strokeStyle = GRAPH_BORDER_STYLE;
     graphCtx.stroke();
 }
 function onMotionData(g) {
