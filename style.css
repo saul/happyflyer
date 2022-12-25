@@ -18,6 +18,16 @@
   position: relative;
 }
 
+.plane-container::before {
+  position: absolute;
+  display: block;
+  content: " ";
+  border-bottom: dashed 1px #aaa;
+  top: 50%;
+  left: 0;
+  right: 0;
+}
+
 .plane {
   width: 75%;
   display: block;

@@ -155,7 +155,14 @@ function onMotionData(g: Vector3) {
 
   graphCtx.font = `${TEXT_HEIGHT}px sans-serif`;
   graphCtx.fillStyle = "#27ae60";
-  graphCtx.fillText(`${m.toFixed(2)}`, MARGIN + 5, start - TEXT_HEIGHT / 2);
+
+  // Round to closest 2dp
+  const mRounded = Math.round(m * 100) / 100;
+  graphCtx.fillText(
+    `${mRounded.toFixed(2)}`,
+    MARGIN + 5,
+    start - TEXT_HEIGHT / 2
+  );
 }
 
 function onMotion(event: DeviceMotionEvent) {
@@ -168,11 +175,19 @@ function onOrientation(event: DeviceOrientationEvent) {
   const roll = event.gamma!; // -90 to 90
   const pitch = event.beta!; // -180 to 180
 
-  $planeRoll.style.transform = `rotate(${-roll}deg)`;
-  $planeRollText.textContent = `${roll | 0}º`;
+  if (Math.abs(pitch) > 30 || Math.abs(roll) > 30) {
+    $planeRoll.style.transform = "";
+    $planeRollText.textContent = `Place flat`;
 
-  $planePitch.style.transform = `rotate(${pitch}deg)`;
-  $planePitchText.textContent = `${pitch | 0}º`;
+    $planePitch.style.transform = "";
+    $planePitchText.textContent = `Place flat`;
+  } else {
+    $planeRoll.style.transform = `rotate(${-roll}deg)`;
+    $planeRollText.textContent = `${roll | 0}º`;
+
+    $planePitch.style.transform = `rotate(${pitch}deg)`;
+    $planePitchText.textContent = `${pitch | 0}º`;
+  }
 }
 
 // In non-secure contexts we can't get motion data
