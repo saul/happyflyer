@@ -105,7 +105,6 @@ function onMotionData(g) {
     for (let i = 0; i < buffered.length; ++i) {
         graphCtx.lineTo(MARGIN + i, magnitudeToHeight(buffered[i]));
     }
-    graphCtx.closePath();
     graphCtx.stroke();
     graphCtx.drawImage($imageSide, MARGIN, start - 15, 60, 60 * ($imageSide.height / $imageSide.width));
     graphCtx.font = `${TEXT_HEIGHT}px sans-serif`;

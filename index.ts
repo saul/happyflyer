@@ -142,7 +142,6 @@ function onMotionData(g: Vector3) {
   for (let i = 0; i < buffered.length; ++i) {
     graphCtx.lineTo(MARGIN + i, magnitudeToHeight(buffered[i]));
   }
-  graphCtx.closePath();
   graphCtx.stroke();
 
   graphCtx.drawImage(
