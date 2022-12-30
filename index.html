@@ -11,18 +11,20 @@
     <div class="container">
       <div class="instrument-panel">
         <div class="plane-container">
+          <canvas id="canvas-pitch"></canvas>
           <img id="plane-pitch" class="plane plane-side" src="side.png" />
           <div id="plane-pitch-text" class="plane-deg-text"></div>
         </div>
 
         <div class="plane-container">
+          <canvas id="canvas-roll"></canvas>
           <img id="plane-roll" class="plane plane-front" src="front.png" />
           <div id="plane-roll-text" class="plane-deg-text"></div>
         </div>
       </div>
 
       <button id="start">▶️ Start</button>
-      <canvas id="graph" />
+      <canvas id="graph"></canvas>
 
       <div style="display: none">
         <img id="img-top" src="top.png" />

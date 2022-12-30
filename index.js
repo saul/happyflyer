@@ -1,7 +1,5 @@
 "use strict";
 const $startBtn = document.querySelector("#start");
-const $canvas = document.getElementById("graph");
-const graphCtx = $canvas.getContext("2d");
 const $imageTop = document.querySelector("#img-top");
 const $imageSide = document.querySelector("#img-side");
 const $imageFront = document.querySelector("#img-front");
@@ -10,13 +8,17 @@ const $planePitchText = document.querySelector("#plane-pitch-text");
 const $planeRoll = document.querySelector("#plane-roll");
 const $planeRollText = document.querySelector("#plane-roll-text");
 const GRAV = 9.80665;
-const width = 512;
-const height = 512;
-$canvas.width = width * window.devicePixelRatio;
-$canvas.height = height * window.devicePixelRatio;
-$canvas.style.width = width + "px";
-$canvas.style.height = height + "px";
-graphCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+const $canvas = document.getElementById("graph");
+const graphCtx = $canvas.getContext("2d");
+const graphWidth = 512;
+const graphHeight = 512;
+setupDpiNativeCanvas($canvas, graphCtx, graphWidth, graphHeight);
+const $canvasPitch = document.getElementById("canvas-pitch");
+const pitchCtx = $canvasPitch.getContext("2d");
+setupDpiNativeCanvas($canvasPitch, pitchCtx, $canvasPitch.clientWidth, $canvasPitch.clientHeight);
+const $canvasRoll = document.getElementById("canvas-roll");
+const rollCtx = $canvasRoll.getContext("2d");
+setupDpiNativeCanvas($canvasRoll, rollCtx, $canvasRoll.clientWidth, $canvasRoll.clientHeight);
 let buffered = [];
 $startBtn.addEventListener("click", (e) => {
     const dme = DeviceMotionEvent;
@@ -49,6 +51,13 @@ $startBtn.addEventListener("click", (e) => {
         $startBtn.remove();
     }
 });
+function setupDpiNativeCanvas(canvas, context, width, height) {
+    canvas.width = width * window.devicePixelRatio;
+    canvas.height = height * window.devicePixelRatio;
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    context.scale(window.devicePixelRatio, window.devicePixelRatio);
+}
 const GRAPH_BORDER_WIDTH = 2;
 const GRAPH_BORDER_STYLE = "rgba(0, 0, 0, 1.0)";
 const GRIDLINE_LINE_STYLE = "rgba(0, 0, 0, 0.3)";
@@ -57,14 +66,16 @@ const MAX_HEIGHT_G = 5;
 const MARGIN = 20;
 const TEXT_HEIGHT = 20;
 function magnitudeToHeight(m) {
-    return (MARGIN + (height - 2 * MARGIN) - (m / MAX_HEIGHT_G) * (height - 2 * MARGIN));
+    return (MARGIN +
+        (graphHeight - 2 * MARGIN) -
+        (m / MAX_HEIGHT_G) * (graphHeight - 2 * MARGIN));
 }
 function drawGridlines() {
     // Graph colour fill
     graphCtx.fillStyle = "rgba(46, 204, 113, 0.2)";
-    graphCtx.fillRect(MARGIN, magnitudeToHeight(2.5), width, magnitudeToHeight(0) - magnitudeToHeight(2.5));
+    graphCtx.fillRect(MARGIN, magnitudeToHeight(2.5), graphWidth, magnitudeToHeight(0) - magnitudeToHeight(2.5));
     graphCtx.fillStyle = "rgba(230, 126, 34, 0.2)";
-    graphCtx.fillRect(MARGIN, magnitudeToHeight(MAX_HEIGHT_G), width, magnitudeToHeight(2.5) - magnitudeToHeight(MAX_HEIGHT_G));
+    graphCtx.fillRect(MARGIN, magnitudeToHeight(MAX_HEIGHT_G), graphWidth, magnitudeToHeight(2.5) - magnitudeToHeight(MAX_HEIGHT_G));
     // Horizontal axis gridlines
     const size = 14;
     graphCtx.font = `${size}px sans-serif`;
@@ -82,7 +93,7 @@ function drawGridlines() {
             graphCtx.strokeStyle = GRIDLINE_LINE_STYLE;
         }
         graphCtx.moveTo(0, y);
-        graphCtx.lineTo(width, y);
+        graphCtx.lineTo(graphWidth, y);
         graphCtx.closePath();
         graphCtx.stroke();
     }
@@ -91,17 +102,17 @@ function drawGridlines() {
     graphCtx.lineWidth = GRAPH_BORDER_WIDTH;
     graphCtx.strokeStyle = GRAPH_BORDER_STYLE;
     graphCtx.moveTo(MARGIN, 0);
-    graphCtx.lineTo(MARGIN, height);
+    graphCtx.lineTo(MARGIN, graphHeight);
     graphCtx.closePath();
     graphCtx.stroke();
 }
 function onMotionData(g) {
     const m = Math.sqrt(g.x * g.x + g.y * g.y + g.z * g.z) / GRAV;
     buffered.unshift(m);
-    if (buffered.length == width) {
-        delete buffered[width];
+    if (buffered.length == graphWidth) {
+        delete buffered[graphWidth];
     }
-    graphCtx.clearRect(0, 0, width, height);
+    graphCtx.clearRect(0, 0, graphWidth, graphHeight);
     drawGridlines();
     const start = magnitudeToHeight(m);
     graphCtx.beginPath();
@@ -129,6 +140,9 @@ let lastRawRoll = 0;
 let lastRawPitch = 0;
 let pitchBias = 0;
 let displayCalibratedPitch = true;
+function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+}
 function updateOrientation(pitch, roll) {
     // Remove pitch bias if we want to show calibrated
     if (displayCalibratedPitch) {
@@ -138,6 +152,8 @@ function updateOrientation(pitch, roll) {
     else {
         $planePitchText.classList.remove("calibrated");
     }
+    pitchCtx.clearRect(0, 0, $canvasPitch.width, $canvasPitch.height);
+    rollCtx.clearRect(0, 0, $canvasRoll.width, $canvasRoll.height);
     if (Math.abs(pitch) > 30 || Math.abs(roll) > 40) {
         $planeRoll.style.transform = "";
         $planeRollText.textContent = `Place flat`;
@@ -150,7 +166,36 @@ function updateOrientation(pitch, roll) {
         $planePitch.style.transform = `rotate(${pitch}deg)`;
         $planePitchText.textContent =
             (displayCalibratedPitch ? "" : "(raw)\n") + `${pitch | 0}º`;
+        pitchCtx.beginPath();
+        pitchCtx.fillStyle = "#ddd";
+        pitchCtx.moveTo($canvasPitch.clientWidth / 2, $canvasPitch.clientHeight / 2);
+        pitchCtx.arc($canvasPitch.clientWidth / 2, $canvasPitch.clientHeight / 2, $canvasPitch.clientWidth / 2, deg2rad(180), deg2rad(180 + pitch), pitch < 0);
+        pitchCtx.closePath();
+        pitchCtx.fill();
+        rollCtx.beginPath();
+        rollCtx.fillStyle = "#ddd";
+        rollCtx.moveTo($canvasRoll.clientWidth / 2, $canvasRoll.clientHeight / 2);
+        rollCtx.arc($canvasRoll.clientWidth / 2, $canvasRoll.clientHeight / 2, $canvasRoll.clientWidth / 2, deg2rad(180), deg2rad(180 - roll), roll > 0);
+        rollCtx.closePath();
+        rollCtx.fill();
+        rollCtx.beginPath();
+        rollCtx.fillStyle = "#ddd";
+        rollCtx.moveTo($canvasRoll.clientWidth / 2, $canvasRoll.clientHeight / 2);
+        rollCtx.arc($canvasRoll.clientWidth / 2, $canvasRoll.clientHeight / 2, $canvasRoll.clientWidth / 2, 0, deg2rad(-roll), roll > 0);
+        rollCtx.closePath();
+        rollCtx.fill();
     }
+    drawMidline(rollCtx, $canvasRoll.clientWidth, $canvasRoll.clientHeight);
+    drawMidline(pitchCtx, $canvasPitch.clientWidth, $canvasPitch.clientHeight);
+}
+function drawMidline(context, width, height) {
+    context.beginPath();
+    context.strokeStyle = "#aaa";
+    context.setLineDash([5, 5]);
+    context.moveTo(0, height / 2);
+    context.lineTo(width, height / 2);
+    context.closePath();
+    context.stroke();
 }
 function onOrientation(event) {
     const roll = event.gamma; // -90 to 90
