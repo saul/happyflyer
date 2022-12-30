@@ -70,6 +70,7 @@ $startBtn.addEventListener("click", (e) => {
       .catch(console.error);
   } else {
     window.addEventListener("devicemotion", onMotion);
+    $startBtn.remove();
   }
 });
 
@@ -200,7 +201,7 @@ function updateOrientation(pitch: number, roll: number) {
     $planePitchText.classList.remove("calibrated");
   }
 
-  if (Math.abs(pitch) > 30 || Math.abs(roll) > 30) {
+  if (Math.abs(pitch) > 30 || Math.abs(roll) > 40) {
     $planeRoll.style.transform = "";
     $planeRollText.textContent = `Place flat`;
 

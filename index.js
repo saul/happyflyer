@@ -46,6 +46,7 @@ $startBtn.addEventListener("click", (e) => {
     }
     else {
         window.addEventListener("devicemotion", onMotion);
+        $startBtn.remove();
     }
 });
 const GRAPH_BORDER_WIDTH = 2;
@@ -137,7 +138,7 @@ function updateOrientation(pitch, roll) {
     else {
         $planePitchText.classList.remove("calibrated");
     }
-    if (Math.abs(pitch) > 30 || Math.abs(roll) > 30) {
+    if (Math.abs(pitch) > 30 || Math.abs(roll) > 40) {
         $planeRoll.style.transform = "";
         $planeRollText.textContent = `Place flat`;
         $planePitch.style.transform = "";
